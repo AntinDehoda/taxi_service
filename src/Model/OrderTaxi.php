@@ -1,8 +1,14 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Model;
-
 
 class OrderTaxi
 {
@@ -17,11 +23,12 @@ class OrderTaxi
 
     /**
      * OrderTaxi constructor.
+     *
      * @param Client $client
      * @param int $fromAddressId
-     * @param int|null $toAddressId
-     * @param Taxi|null $taxi
-     * @param int|null $id
+     * @param null|int $toAddressId
+     * @param null|Taxi $taxi
+     * @param null|int $id
      */
     public function __construct(Client $client, int $fromAddressId, ?int $toAddressId, ?Taxi $taxi, ?int $id)
     {
@@ -94,6 +101,7 @@ class OrderTaxi
     public function setOrderDate($orderDate): self
     {
         $this->orderDate = $orderDate;
+
         return $this;
     }
 
@@ -115,8 +123,7 @@ class OrderTaxi
     public function setStatus($status): self
     {
         $this->status = $status;
+
         return $this;
     }
-
-
 }

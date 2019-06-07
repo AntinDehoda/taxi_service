@@ -1,8 +1,14 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Model;
-
 
 class Client
 {
@@ -17,21 +23,22 @@ class Client
 
     /**
      * Client constructor.
+     *
      * @param string $phone
-     * @param string|null $firstName
-     * @param string|null $lastName
-     * @param int|null $id
+     * @param null|string $firstName
+     * @param null|string $lastName
+     * @param null|int $id
      */
     public function __construct(string $phone, ?string $firstName, ?string $lastName, ?int $id)
     {
         $this->phone = $phone;
-        $this->firstName = $firstName ?? "ClientName";
-        $this->lastName = $lastName ?? "ClientLastName";
+        $this->firstName = $firstName ?? 'ClientName';
+        $this->lastName = $lastName ?? 'ClientLastName';
         $this->id = $id;
     }
 
     /**
-     * @return int|null
+     * @return null|int
      */
     public function getId(): ?int
     {
@@ -52,7 +59,7 @@ class Client
     }
 
     /**
-     * @param string|null $firstName
+     * @param null|string $firstName
      */
     public function setFirstName(?string $firstName): void
     {
@@ -60,7 +67,7 @@ class Client
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getLastName(): ?string
     {
@@ -68,7 +75,7 @@ class Client
     }
 
     /**
-     * @param string|null $lastName
+     * @param null|string $lastName
      */
     public function setLastName(?string $lastName): void
     {
@@ -158,5 +165,4 @@ class Client
     {
         return 'Client: ' . $this->getFirstName() . ', phone: ' . $this->getPhone();
     }
-
 }

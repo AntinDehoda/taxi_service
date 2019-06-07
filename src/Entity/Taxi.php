@@ -1,5 +1,13 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -48,7 +56,7 @@ class Taxi
      */
     private $orderTaxis;
 
-    public function __construct(string $phone, string $firstName, int $id )
+    public function __construct(string $phone, string $firstName, int $id)
     {
         $this->id = $id;
         $this->phone = $phone;
@@ -145,6 +153,7 @@ class Taxi
     {
         if ($this->orderTaxis->contains($orderTaxi)) {
             $this->orderTaxis->removeElement($orderTaxi);
+
             if ($orderTaxi->getTaxi() === $this) {
                 $orderTaxi->setTaxi(null);
             }

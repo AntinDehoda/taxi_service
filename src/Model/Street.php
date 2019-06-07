@@ -1,8 +1,14 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Model;
-
 
 class Street
 {
@@ -12,9 +18,10 @@ class Street
 
     /**
      * Street constructor.
+     *
      * @param string $name
-     * @param District|null $district
-     * @param int|null $id
+     * @param null|District $district
+     * @param null|int $id
      */
     public function __construct(string $name, ?District $district, ?int $id)
     {
@@ -57,5 +64,4 @@ class Street
     {
         $this->district = $district;
     }
-
 }

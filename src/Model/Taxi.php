@@ -1,8 +1,14 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Model;
-
 
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -16,7 +22,7 @@ class Taxi
     private $car;
     private $orderTaxis;
 
-    public function __construct(string $phone, string $firstName, ?int $id )
+    public function __construct(string $phone, string $firstName, ?int $id)
     {
         $this->id = $id;
         $this->phone = $phone;
@@ -80,5 +86,4 @@ class Taxi
     {
         $this->car = $car;
     }
-
 }

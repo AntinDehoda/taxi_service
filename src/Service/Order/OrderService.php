@@ -1,8 +1,14 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Service\Order;
-
 
 use App\DBAL\EnumOrderStatus;
 use App\Entity\Taxi;
@@ -48,8 +54,7 @@ class OrderService implements OrderServiceInterface
         AddressServiceInterface $addressService,
         TaxiRepository $taxiRepository,
         DistrictRepository $districtRepository
-    )
-    {
+    ) {
         $this->orderTaxiRepository = $orderRepository;
         $this->clientService = $clientService;
         $this->addressService = $addressService;
@@ -59,13 +64,15 @@ class OrderService implements OrderServiceInterface
 
     /**
      * Formed taxi order model from OrderDto data
+     *
      * @param OrderDto $orderDto
+     *
      * @return OrderTaxi
      *
      */
     private function getOrder(OrderDto $orderDto): OrderTaxi
     {
-        /** @var Client $clientModel
+        /** @var Client
          * Search for an entity Client by phone number
          */
         $clientModel = $this->clientService->find($orderDto->phone);
@@ -76,53 +83,58 @@ class OrderService implements OrderServiceInterface
                 $this->clientService
                     ->create($orderDto->phone, $orderDto->firstName, $orderDto->lastName);
         }
-        /** @var District $district
+        /** @var District
          * Search for an entity District
          */
         $district = DistrictMapper::entityToModel($orderDto->district);
 
-        /** @var int $addressFromId
+        /** @var int
          * Getting id entity AddressFrom
          */
         $addressFromId =
             $this->addressService
                 ->get($orderDto->streetFrom, $orderDto->streetFromNumber, $district);
-        /** @var int|null $addressToId
+        /** @var null|int
          * Getting id entity AddressTo
          */
         $addressToId = null;
+
         if ($orderDto->streetTo) {
             $addressToId =
                 $this->addressService
                     ->get($orderDto->streetTo, $orderDto->streetToNumber, null);
         }
-        /** @var Taxi $taxiEntity
+        /** @var Taxi
          * Search for an entity Taxi by District id
          */
         $taxiEntity = $this->taxiRepository->findByDistrict($district->getId());
         $taxiModel = ($taxiEntity) ? TaxiMapper::entityToModel($taxiEntity) : null;
+
         return new OrderTaxi($clientModel, $addressFromId, $addressToId, $taxiModel, null);
     }
 
     /** Create a taxi order
      * @param OrderDto $orderDto
+     *
      * @return OrderTaxi
      */
     public function createOrder(OrderDto $orderDto): OrderTaxi
     {
         $orderModel = $this->getOrder($orderDto);
         $entity = $this->orderTaxiRepository->save(OrderMapper::modelToEntity($orderModel));
-        return OrderMapper::entityToModel($entity);
 
+        return OrderMapper::entityToModel($entity);
     }
 
     /** Search for an existing order and convert it for display in the edit form
      * @param int $id
-     * @return OrderDto|null
+     *
+     * @return null|OrderDto
      */
     public function edit(int $id): ?OrderDto
     {
         $orderModel =  $this->orderTaxiRepository->find($id);
+
         if (null != $orderModel) {
             $addressFrom = $this->addressService->find($orderModel->getFromAddressId());
             $streetFrom = $this->addressService->findStreetById($addressFrom->getStreet());
@@ -142,17 +154,20 @@ class OrderService implements OrderServiceInterface
                 $dto->streetTo = $streetTo->getName();
                 $dto->streetToNumber = $addressTo->getHouse();
             }
+
             return $dto;
         }
     }
 
     /** Search for an existing order
      * @param int $id
-     * @return OrderTaxi|null
+     *
+     * @return null|OrderTaxi
      */
     public function find(int $id): ?OrderTaxi
     {
         $entity = $this->orderTaxiRepository->find($id);
+
         return OrderMapper::entityToModel($entity);
     }
 
@@ -168,6 +183,7 @@ class OrderService implements OrderServiceInterface
 
     /** Order cancellation. Order status changes to cancelled. Returns client information
      * @param int $id
+     *
      * @return string
      */
     public function cancel(int $id): string
@@ -175,6 +191,7 @@ class OrderService implements OrderServiceInterface
         $order = $this->orderTaxiRepository->find($id);
         $order->setStatus(EnumOrderStatus::$static_values[3]);
         $this->orderTaxiRepository->update();
+
         return $order->getClient()->toString();
     }
 
@@ -190,6 +207,4 @@ class OrderService implements OrderServiceInterface
         $orderEntity->setStatus(EnumOrderStatus::$static_values[4]);
         $this->orderTaxiRepository->updateOrder($orderEntity);
     }
-
-
 }

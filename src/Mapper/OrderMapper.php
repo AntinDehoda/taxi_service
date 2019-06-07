@@ -1,5 +1,12 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Mapper;
 
@@ -22,21 +29,24 @@ class OrderMapper
             ->setOrderDate(new \DateTime('now'))
             ->setStatus($entity->getStatus())
         ;
+
         return $model;
     }
 
     public static function modelToEntity(OrderModel $model): OrderTaxi
     {
         $client = ClientMapper::modelToEntity($model->getClient());
-        $taxi = ($model->getTaxi())? TaxiMapper::modelToEntity($model->getTaxi()) : null;
+        $taxi = ($model->getTaxi()) ? TaxiMapper::modelToEntity($model->getTaxi()) : null;
         $entity =  new OrderTaxi(
             $client,
             $model->getFromAddressId(),
             $model->getToAddressId(),
-            $taxi);
+            $taxi
+        );
         $entity
             ->setOrderDate(new \DateTime('now'))
         ;
+
         return $entity;
     }
     public static function entityToDto(OrderModel $entity)
@@ -46,7 +56,6 @@ class OrderMapper
         $dto->lastName = $entity->getClient()->getLastName();
         $dto->phone = $entity->getClient()->getPhone();
         $dto->streetFrom = $entity->getToAddressId();
-
     }
     public static function updateEntity(OrderTaxi $entity, OrderModel $model)
     {
@@ -60,5 +69,4 @@ class OrderMapper
         
         return $entity;
     }
-
 }

@@ -1,5 +1,13 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Client;
@@ -8,14 +16,13 @@ use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Client|null find($id, $lockMode = null, $lockVersion = null)
- * @method Client|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Client find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Client findOneBy(array $criteria, array $orderBy = null)
  * @method Client[]    findAll()
  * @method Client[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ClientRepository extends ServiceEntityRepository
 {
-
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Client::class);
@@ -30,7 +37,6 @@ class ClientRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getOneOrNullResult()
                 ;
-
         } catch (NonUniqueResultException $e) {
             return null;
         }
@@ -41,6 +47,7 @@ class ClientRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         $em->persist($client);
         $em->flush();
+
         return $client;
     }
     public function update(): void

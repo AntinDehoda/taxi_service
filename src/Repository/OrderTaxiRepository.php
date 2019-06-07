@@ -1,5 +1,13 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Client;
@@ -9,8 +17,8 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use App\Entity\Taxi;
 
 /**
- * @method OrderTaxi|null find($id, $lockMode = null, $lockVersion = null)
- * @method OrderTaxi|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|OrderTaxi find($id, $lockMode = null, $lockVersion = null)
+ * @method null|OrderTaxi findOneBy(array $criteria, array $orderBy = null)
  * @method OrderTaxi[]    findAll()
  * @method OrderTaxi[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */

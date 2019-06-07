@@ -1,5 +1,13 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\District;
@@ -9,8 +17,8 @@ use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Street|null find($id, $lockMode = null, $lockVersion = null)
- * @method Street|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Street find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Street findOneBy(array $criteria, array $orderBy = null)
  * @method Street[]    findAll()
  * @method Street[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -34,12 +42,14 @@ class StreetRepository extends ServiceEntityRepository
         } catch (NonUniqueResultException $e) {
             return null;
         }
+
         return $result['id'];
     }
     public function save(Street $street): Street
     {
         $em = $this->getEntityManager();
         $districtExist= $street->getDistrict();
+
         if ($districtExist) {
             $DistrictId = $districtExist->getId();
             /** @var District $district */
@@ -49,6 +59,7 @@ class StreetRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         $em->persist($street);
         $em->flush();
+
         return $street;
     }
 }

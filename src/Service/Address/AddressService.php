@@ -1,8 +1,14 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Service\Address;
-
 
 use App\Mapper\AddressMapper;
 use App\Mapper\StreetMapper;
@@ -17,10 +23,8 @@ use App\Repository\StreetRepository;
  *
  * @author Anton Degoda <dehoda@ukr.net>
  */
-
 class AddressService implements AddressServiceInterface
 {
-
     private $addressRepository;
     private $streetRepository;
 
@@ -33,12 +37,14 @@ class AddressService implements AddressServiceInterface
     public function findStreet(string $streetName): ?int
     {
         $streetId = $this->streetRepository->findByName($streetName);
+
         return $streetId;
     }
 
     public function findStreetById(int $id): ?Street
     {
         $street = $this->streetRepository->find($id);
+
         return StreetMapper::entityToModel($street);
     }
 
@@ -46,6 +52,7 @@ class AddressService implements AddressServiceInterface
     {
         $street = new Street($streetName, $district, null);
         $street = $this->streetRepository->save(StreetMapper::modelToEntity($street));
+
         return $street->getId();
     }
 
@@ -57,19 +64,23 @@ class AddressService implements AddressServiceInterface
     public function createAddress(int $streetId, string $number): int
     {
         $address = new Address($streetId, $number);
+
         return $this->addressRepository->save(AddressMapper::modelToEntity($address));
     }
     public function find(?int $id): Address
     {
         $entity = $this->addressRepository->find($id);
+
         return AddressMapper::entityToModel($entity);
     }
 
     /**
      * The method looks for a street or an address, and if it does not find it, it creates new.
+     *
      * @param string $streetName
      * @param string $number
-     * @param District|null $district
+     * @param null|District $district
+     *
      * @return int
      */
     public function get(string $streetName, string $number, ?District $district): int
@@ -83,7 +94,7 @@ class AddressService implements AddressServiceInterface
         } else {
             $addressId = $this->findAddress($streetId, $number) ?? $this->createAddress($streetId, $number);
         }
+
         return $addressId;
     }
-
 }
