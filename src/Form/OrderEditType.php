@@ -22,7 +22,7 @@ final class OrderEditType extends AbstractType
             ->add('phone', TextType::class)
             ->add('district', EntityType::class, [
                 'class' => District::class,
-                'choice_label' => 'no',
+                'choice_label' => 'name',
                 'choice_value' => 'id',
             ])
             ->add('streetFrom', TextType::class)

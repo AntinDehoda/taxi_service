@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
+{% block title %}Taxi Order{% endblock %}
 
 {% block body %}
+    <h2>Edit Your Order</h2>
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <input type="submit" value="Update" class="btn btn-success">

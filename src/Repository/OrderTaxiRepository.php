@@ -27,7 +27,12 @@ class OrderTaxiRepository extends ServiceEntityRepository
         /** @var Client $client */
         $client = $em->getRepository('App\Entity\Client')->find($clientId);
         $order->setClient($client);
-        $em->persist($order->getTaxi());
+
+        $taxiId= $order->getTaxi()->getId();
+        /** @var Taxi $taxi */
+        $taxi = $em->getRepository('App\Entity\Taxi')->find($taxiId);
+        $order->setTaxi($taxi);
+
         $em->persist($order);
         $em->flush();
 

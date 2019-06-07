@@ -27,11 +27,13 @@ class OrderMapper
 
     public static function modelToEntity(OrderModel $model): OrderTaxi
     {
+        $client = ClientMapper::modelToEntity($model->getClient());
+        $taxi = ($model->getTaxi())? TaxiMapper::modelToEntity($model->getTaxi()) : null;
         $entity =  new OrderTaxi(
-            ClientMapper::modelToEntity($model->getClient()),
+            $client,
             $model->getFromAddressId(),
             $model->getToAddressId(),
-            TaxiMapper::modelToEntity($model->getTaxi()));
+            $taxi);
         $entity
             ->setOrderDate(new \DateTime('now'))
         ;

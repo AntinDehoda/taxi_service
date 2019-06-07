@@ -13,6 +13,7 @@
 
 <main>
     <div class="container">
+        <h1>Taxi Order</h1>
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">
                 {{ parse_url(message) }}

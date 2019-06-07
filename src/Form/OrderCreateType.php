@@ -22,7 +22,7 @@ final class OrderCreateType extends AbstractType
             ->add('phone', TextType::class)
             ->add('district', EntityType::class, [
                 'class' => District::class,
-                'choice_label' => 'no',
+                'choice_label' => 'name',
             ])
             ->add('streetFrom', TextType::class)
             ->add('streetFromNumber', TextType::class)

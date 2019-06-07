@@ -12,6 +12,12 @@ use App\Model\Street;
 use App\Repository\AddressRepository;
 use App\Repository\StreetRepository;
 
+/**
+ * Class responsible for the creation and management of Street & Address entities
+ *
+ * @author Anton Degoda <dehoda@ukr.net>
+ */
+
 class AddressService implements AddressServiceInterface
 {
 
@@ -22,17 +28,6 @@ class AddressService implements AddressServiceInterface
     {
         $this->addressRepository = $addressRepository;
         $this->streetRepository = $streetRepository;
-    }
-
-    public function findAddress(int $streetId, string $number): ?int
-    {
-        return $this->addressRepository->findAddress($streetId, $number);
-    }
-
-    public function createAddress(int $streetId, string $number): int
-    {
-        $address = new Address($streetId, $number);
-        return $this->addressRepository->save(AddressMapper::modelToEntity($address));
     }
 
     public function findStreet(string $streetName): ?int
@@ -54,6 +49,29 @@ class AddressService implements AddressServiceInterface
         return $street->getId();
     }
 
+    public function findAddress(int $streetId, string $number): ?int
+    {
+        return $this->addressRepository->findAddress($streetId, $number);
+    }
+
+    public function createAddress(int $streetId, string $number): int
+    {
+        $address = new Address($streetId, $number);
+        return $this->addressRepository->save(AddressMapper::modelToEntity($address));
+    }
+    public function find(?int $id): Address
+    {
+        $entity = $this->addressRepository->find($id);
+        return AddressMapper::entityToModel($entity);
+    }
+
+    /**
+     * The method looks for a street or an address, and if it does not find it, it creates new.
+     * @param string $streetName
+     * @param string $number
+     * @param District|null $district
+     * @return int
+     */
     public function get(string $streetName, string $number, ?District $district): int
     {
         $streetId = $this->findStreet($streetName);
@@ -68,9 +86,4 @@ class AddressService implements AddressServiceInterface
         return $addressId;
     }
 
-    public function find(?int $id): Address
-    {
-        $entity = $this->addressRepository->find($id);
-        return AddressMapper::entityToModel($entity);
-    }
 }

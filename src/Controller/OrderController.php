@@ -10,7 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\OrderConfirmType;
 use App\Form\OrderEditType;
-
+/**
+ * The controller opens the order management pages (pages of confirmation, editing, canceling)
+ *
+ * @author Anton Degoda <dehoda@ukr.net>
+ */
 class OrderController extends AbstractController
 {
     private $orderService;
@@ -37,6 +41,10 @@ class OrderController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
+            /**
+             * The confirmation page has 3 buttons (confirm, edit and cancel).
+             * @var String $nextAction is formed depending on which button is pressed
+             */
             $nextAction = $form->getClickedButton()->getName();
             if ($nextAction == 'order') {
                 $this->addFlash('success', 'Your order was successfully confirmed!');
@@ -58,7 +66,6 @@ class OrderController extends AbstractController
 
         ]);
     }
-
     /**
      * @Route("/order/{id}/edit", name="order_edit", requirements={"id": "\d+"})
      * @param Request $request
@@ -86,7 +93,6 @@ class OrderController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * @Route("/order/{id}/cancel", name="order_cancel", requirements={"id": "\d+"})
      * @param Request $request

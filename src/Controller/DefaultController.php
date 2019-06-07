@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\OrderCreateType;
 
 /**
- * Controller
+ * The controller opens the main page with the order form.
  *
  * @author Anton Degoda <dehoda@ukr.net>
  */

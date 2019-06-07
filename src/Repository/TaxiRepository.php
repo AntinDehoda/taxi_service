@@ -20,7 +20,7 @@ class TaxiRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Taxi::class);
     }
-    public function findByDistrict(int $districtId): Taxi
+    public function findByDistrict(int $districtId): ?Taxi
     {
         try {
             return $this->createQueryBuilder('t')

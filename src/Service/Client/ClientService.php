@@ -24,8 +24,6 @@ class ClientService implements ClientServiceInterface
         $client = new Client($phone, $firstName, $lastName, null);
         $entity = $this->clientRepository->save(ClientMapper::modelToEntity($client));
         return ClientMapper::entityToModel($entity);
-        return $client;
-
     }
 
     public function find(string $phone): ?Client
