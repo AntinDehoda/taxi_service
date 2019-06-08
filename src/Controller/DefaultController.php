@@ -40,7 +40,7 @@ final class DefaultController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formDto = $form->getData();
-            $orderTaxi = $orderService->createOrder($formDto);
+            $orderTaxi = $orderService->create($formDto);
 
             return $this->redirectToRoute('order', [
                 'id' => $orderTaxi->getId(),

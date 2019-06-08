@@ -26,7 +26,7 @@ class OrderMapper
             $entity->getId()
         );
         $model
-            ->setOrderDate(new \DateTime('now'))
+            ->setOrderDate($entity->getOrderDate())
             ->setStatus($entity->getStatus())
         ;
 
@@ -44,7 +44,7 @@ class OrderMapper
             $taxi
         );
         $entity
-            ->setOrderDate(new \DateTime('now'))
+            ->setOrderDate($model->getOrderDate())
         ;
 
         return $entity;

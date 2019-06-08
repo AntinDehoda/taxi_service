@@ -70,7 +70,7 @@ class OrderService implements OrderServiceInterface
      * @return OrderTaxi
      *
      */
-    private function getOrder(OrderDto $orderDto): OrderTaxi
+    private function get(OrderDto $orderDto): OrderTaxi
     {
         /** @var Client
          * Search for an entity Client by phone number
@@ -118,9 +118,9 @@ class OrderService implements OrderServiceInterface
      *
      * @return OrderTaxi
      */
-    public function createOrder(OrderDto $orderDto): OrderTaxi
+    public function create(OrderDto $orderDto): OrderTaxi
     {
-        $orderModel = $this->getOrder($orderDto);
+        $orderModel = $this->get($orderDto);
         $entity = $this->orderTaxiRepository->save(OrderMapper::modelToEntity($orderModel));
 
         return OrderMapper::entityToModel($entity);
@@ -138,6 +138,7 @@ class OrderService implements OrderServiceInterface
         if (null != $orderModel) {
             $addressFrom = $this->addressService->find($orderModel->getFromAddressId());
             $streetFrom = $this->addressService->findStreetById($addressFrom->getStreet());
+            $district = $streetFrom->getDistrict();
 
             $dto = new OrderDto();
             $dto->firstName = $orderModel->getClient()->getFirstName();
@@ -145,7 +146,7 @@ class OrderService implements OrderServiceInterface
             $dto->phone = $orderModel->getClient()->getPhone();
             $dto->streetFrom = $streetFrom->getName();
             $dto->streetFromNumber = $addressFrom->getHouse();
-            $dto->district = $this->districtRepository->findById($streetFrom->getDistrict()->getId());
+            $dto->district = $district ? $this->districtRepository->findById($district->getId()) : null;
 
             $addressTo = $this->addressService->find($orderModel->getToAddressId());
 
@@ -192,7 +193,7 @@ class OrderService implements OrderServiceInterface
         $order->setStatus(EnumOrderStatus::$static_values[3]);
         $this->orderTaxiRepository->update();
 
-        return $order->getClient()->toString();
+        return (string) $order->getClient();
     }
 
     /** Order update. Order status changes to updated
@@ -201,7 +202,7 @@ class OrderService implements OrderServiceInterface
      */
     public function update(OrderDto $orderDto, int $id): void
     {
-        $orderModel = $this->getOrder($orderDto);
+        $orderModel = $this->get($orderDto);
         $orderEntity = $this->orderTaxiRepository->find($id);
         $orderEntity = OrderMapper::updateEntity($orderEntity, $orderModel);
         $orderEntity->setStatus(EnumOrderStatus::$static_values[4]);

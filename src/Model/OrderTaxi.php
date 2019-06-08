@@ -21,15 +21,6 @@ class OrderTaxi
     private $amount;
     private $status;
 
-    /**
-     * OrderTaxi constructor.
-     *
-     * @param Client $client
-     * @param int $fromAddressId
-     * @param null|int $toAddressId
-     * @param null|Taxi $taxi
-     * @param null|int $id
-     */
     public function __construct(Client $client, int $fromAddressId, ?int $toAddressId, ?Taxi $taxi, ?int $id)
     {
         $this->client = $client;
@@ -37,6 +28,7 @@ class OrderTaxi
         $this->toAddressId = $toAddressId;
         $this->taxi = $taxi;
         $this->id = $id;
+        $this->setOrderDate(new \DateTime('now'));
     }
 
 
@@ -93,7 +85,7 @@ class OrderTaxi
         $this->taxi = $taxi;
     }
 
-    public function getOrderDate(): \DateTime
+    public function getOrderDate(): ?\DateTime
     {
         return $this->orderDate;
     }

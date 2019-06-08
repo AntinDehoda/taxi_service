@@ -69,6 +69,7 @@ class OrderTaxi
         $this->taxi = $taxi;
         $this->status = EnumOrderStatus::$static_values[0];
         $this->amount = 0;
+        $this->setOrderDate(new \DateTime('now'));
     }
 
     public function getId(): ?int
@@ -156,5 +157,8 @@ class OrderTaxi
     public function setStatus($status): void
     {
         $this->status = $status;
+    }
+    public function confirm()
+    {
     }
 }

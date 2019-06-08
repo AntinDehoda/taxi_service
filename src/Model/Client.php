@@ -161,7 +161,7 @@ class Client
     {
         $this->currentOrderId = $currentOrderId;
     }
-    public function toString()
+    public function __toString()
     {
         return 'Client: ' . $this->getFirstName() . ', phone: ' . $this->getPhone();
     }

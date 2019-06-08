@@ -86,4 +86,8 @@ class Taxi
     {
         $this->car = $car;
     }
+    public function __toString()
+    {
+        return 'Driver: ' . $this->getFirstName() . ', phone: ' . $this->getPhone();
+    }
 }

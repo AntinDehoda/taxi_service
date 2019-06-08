@@ -15,7 +15,7 @@ use App\Model\OrderTaxi;
 
 interface OrderServiceInterface
 {
-    public function createOrder(OrderDto $orderDto): OrderTaxi;
+    public function create(OrderDto $orderDto): OrderTaxi;
     public function edit(int $id): ?OrderDto;
     public function find(int $id): ?OrderTaxi;
     public function confirm(int $id): void;

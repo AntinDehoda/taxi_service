@@ -63,10 +63,8 @@ class OrderController extends AbstractController
 
             if ('order' == $nextAction) {
                 $this->addFlash('success', 'Your order was successfully confirmed!');
-                $this->orderService->confirm($id);
             } elseif ('order_cancel' == $nextAction) {
                 $this->addFlash('success', 'Your order was successfully cancelled!');
-                $this->orderService->confirm($id);
             }
 
             return $this->redirectToRoute($nextAction, [
@@ -76,10 +74,9 @@ class OrderController extends AbstractController
 
         return $this->render('order/order.html.twig', [
             'form' => $form->createView(),
-            'client' => $order->getClient()->toString(),
-            'taxi' => $order->getTaxi()->getPhone(),
-
-        ]);
+            'client' => (string) $order->getClient(),
+            'taxi' => (string) $order->getTaxi(),
+         ]);
     }
     /**
      * @Route("/order/{id}/edit", name="order_edit", requirements={"id": "\d+"})
