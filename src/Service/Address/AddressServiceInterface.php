@@ -16,11 +16,11 @@ use App\Model\Street;
 
 interface AddressServiceInterface
 {
-    public function get(string $streetName, string $number, District $district): int;
-    public function findAddress(int $streetId, string $number): ?int;
-    public function createAddress(int $streetId, string $number): int;
-    public function findStreet(string $streetName): ?int;
-    public function findStreetById(int $id): ?Street;
-    public function createStreet(string $streetName, District $district): int;
-    public function find(?int $id): Address;
+    public function get(string $streetName, string $number, ?District $district): Address;
+    public function findAddress(Street $street, string $number): ?Address;
+    public function createAddress(Street $street, string $number): Address;
+    public function findStreet(string $streetName): ?Street;
+    public function findStreetBy(Street $street): ?Street;
+    public function createStreet(string $streetName, District $district): Street;
+    public function find(Address $address): ?Address;
 }

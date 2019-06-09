@@ -18,16 +18,17 @@ class OrderMapper
 {
     public static function entityToModel(OrderTaxi $entity): OrderModel
     {
+        $taxi = ($entity->getTaxi()) ? TaxiMapper::entityToModel($entity->getTaxi()) : null;
         $model =  new OrderModel(
             ClientMapper::entityToModel($entity->getClient()),
-            $entity->getFromAddressId(),
-            $entity->getToAddressId(),
-            TaxiMapper::entityToModel($entity->getTaxi()),
+            AddressMapper::entityToModel($entity->getFromAddress()),
+            AddressMapper::entityToModel($entity->getToAddress()),
+            $taxi,
             $entity->getId()
         );
         $model
             ->setOrderDate($entity->getOrderDate())
-            ->setStatus($entity->getStatus())
+//            ->setStatus($entity->getStatus())
         ;
 
         return $model;
@@ -39,8 +40,8 @@ class OrderMapper
         $taxi = ($model->getTaxi()) ? TaxiMapper::modelToEntity($model->getTaxi()) : null;
         $entity =  new OrderTaxi(
             $client,
-            $model->getFromAddressId(),
-            $model->getToAddressId(),
+            AddressMapper::modelToEntity($model->getFromAddress()),
+            AddressMapper::modelToEntity($model->getToAddress()),
             $taxi
         );
         $entity
@@ -55,15 +56,18 @@ class OrderMapper
         $dto->firstName = $entity->getClient()->getFirstName();
         $dto->lastName = $entity->getClient()->getLastName();
         $dto->phone = $entity->getClient()->getPhone();
-        $dto->streetFrom = $entity->getToAddressId();
+        $dto->streetFrom = $entity->getToAddress();
     }
     public static function updateEntity(OrderTaxi $entity, OrderModel $model)
     {
         $client = ClientMapper::modelToEntity($model->getClient());
-        $taxi = TaxiMapper::modelToEntity($model->getTaxi());
+        $taxi = ($model->getTaxi()) ? TaxiMapper::modelToEntity($model->getTaxi()) : null;
+        $addressFrom = AddressMapper::modelToEntity($model->getFromAddress());
+        $addressTo = AddressMapper::modelToEntity($model->getToAddress());
+
         $entity->setClient($client);
-        $entity->setFromAddressId($model->getFromAddressId());
-        $entity->setToAddressId($model->getToAddressId());
+        $entity->setFromAddress($addressFrom);
+        $entity->setToAddress($addressTo);
         $entity->setAmount($model->getAmount());
         $entity->setTaxi($taxi);
         

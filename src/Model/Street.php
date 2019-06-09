@@ -30,7 +30,7 @@ class Street
         $this->id = $id;
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -63,5 +63,10 @@ class Street
     public function setDistrict(?District $district): void
     {
         $this->district = $district;
+    }
+
+    public function __toString()
+    {
+        return 'Street: ' . $this->getName();
     }
 }

@@ -1,23 +1,16 @@
 <?php
 
-/*
- *
- * (c) Anton Dehoda <dehoda@ukr.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Repository;
 
 use App\Entity\Address;
+use App\Entity\Street;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method null|Address find($id, $lockMode = null, $lockVersion = null)
- * @method null|Address findOneBy(array $criteria, array $orderBy = null)
+ * @method Address|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Address|null findOneBy(array $criteria, array $orderBy = null)
  * @method Address[]    findAll()
  * @method Address[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -27,31 +20,58 @@ class AddressRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Address::class);
     }
-
-    public function findAddress(int $streetId, string $house): ?int
+    public function findAddress(Street $street, string $house): ?Address
     {
         try {
-            $result =  $this->createQueryBuilder('a')
-                ->select('a.id')
-                ->andWhere('a.streetId = :streetId')
-                ->setParameter('streetId', $streetId)
+            return $this->createQueryBuilder('a')
+                ->andWhere('a.street = :street')
+                ->setParameter('street', $street)
                 ->andWhere('a.house = :house')
                 ->setParameter('house', $house)
                 ->getQuery()
                 ->getOneOrNullResult()
-                ;
-
-            return $result['id'];
+            ;
         } catch (NonUniqueResultException $e) {
             return null;
         }
     }
-    public function save(Address $address): int
+    public function save(Address $address): Address
     {
         $em = $this->getEntityManager();
+
+        /** @var Street $street */
+        $street = $em->getRepository('App\Entity\Street')->find($address->getStreet());
+        $address->setStreet($street);
         $em->persist($address);
         $em->flush();
-
-        return $address->getId();
+        return $address;
     }
+    // /**
+    //  * @return Address[] Returns an array of Address objects
+    //  */
+    /*
+    public function findByExampleField($value)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('a.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    */
+
+    /*
+    public function findOneBySomeField($value): ?Address
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
 }

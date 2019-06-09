@@ -63,6 +63,7 @@ class OrderController extends AbstractController
 
             if ('order' == $nextAction) {
                 $this->addFlash('success', 'Your order was successfully confirmed!');
+                $this->orderService->confirm($order);
             } elseif ('order_cancel' == $nextAction) {
                 $this->addFlash('success', 'Your order was successfully cancelled!');
             }
@@ -76,6 +77,7 @@ class OrderController extends AbstractController
             'form' => $form->createView(),
             'client' => (string) $order->getClient(),
             'taxi' => (string) $order->getTaxi(),
+            'address' => (string) $order->getFromAddress(),
          ]);
     }
     /**

@@ -10,24 +10,28 @@
 
 namespace App\Model;
 
+use App\Status\OrderStatus;
+
 class OrderTaxi
 {
     private $id;
     private $client;
-    private $fromAddressId;
-    private $toAddressId;
+    private $fromAddress;
+    private $toAddress;
     private $taxi;
     private $orderDate;
     private $amount;
     private $status;
 
-    public function __construct(Client $client, int $fromAddressId, ?int $toAddressId, ?Taxi $taxi, ?int $id)
+
+    public function __construct(Client $client, Address $fromAddress, ?Address $toAddress, ?Taxi $taxi, ?int $id)
     {
         $this->client = $client;
-        $this->fromAddressId = $fromAddressId;
-        $this->toAddressId = $toAddressId;
+        $this->fromAddress = $fromAddress;
+        $this->toAddress = $toAddress;
         $this->taxi = $taxi;
         $this->id = $id;
+        $this->amount = 0;
         $this->setOrderDate(new \DateTime('now'));
     }
 
@@ -50,27 +54,29 @@ class OrderTaxi
     }
 
 
-    public function getFromAddressId()
+    public function getFromAddress(): Address
     {
-        return $this->fromAddressId;
+        return $this->fromAddress;
     }
 
 
-    public function setFromAddressId($fromAddressId): void
+    public function setFromAddress($fromAddress): self
     {
-        $this->fromAddressId = $fromAddressId;
+        $this->fromAddress = $fromAddress;
+        return $this;
     }
 
 
-    public function getToAddressId()
+    public function getToAddress(): Address
     {
-        return $this->toAddressId;
+        return $this->toAddress;
     }
 
 
-    public function setToAddressId($toAddressId): void
+    public function setToAddress($toAddress): self
     {
-        $this->toAddressId = $toAddressId;
+        $this->toAddress = $toAddress;
+        return $this;
     }
 
 
@@ -97,7 +103,7 @@ class OrderTaxi
         return $this;
     }
 
-    public function getAmount()
+    public function getAmount(): int
     {
         return $this->amount;
     }
@@ -107,15 +113,22 @@ class OrderTaxi
         $this->amount = $amount;
     }
 
-    public function getStatus()
+    public function cancel(): void
     {
-        return $this->status;
+        $this->status = OrderStatus::CANCELLED;
     }
 
-    public function setStatus($status): self
+    public function update(): void
     {
-        $this->status = $status;
-
-        return $this;
+        $this->status = OrderStatus::UPDATED;
     }
+    public function confirm(): void
+    {
+        $this->status = OrderStatus::EXECUTED;
+    }
+    public function complete(): void
+    {
+        $this->status = OrderStatus::COMPLETED;
+    }
+
 }

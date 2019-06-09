@@ -19,15 +19,13 @@ class StreetMapper
     {
         $district = ($entity->getDistrict()) ? DistrictMapper::entityToModel($entity->getDistrict()) : null;
         $model = new StreetModel($entity->getName(), $district, $entity->getId());
-
         return $model;
     }
 
     public static function modelToEntity(StreetModel $model): Street
     {
         $district = ($model->getDistrict()) ? DistrictMapper::modelToEntity($model->getDistrict()) : null;
-        $entity =  new Street($model->getName(), $district);
-
+        $entity =  new Street($model->getName(), $district, $model->getId());
         return $entity;
     }
 }

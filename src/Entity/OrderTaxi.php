@@ -1,16 +1,8 @@
 <?php
 
-/*
- *
- * (c) Anton Dehoda <dehoda@ukr.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
-use App\DBAL\EnumOrderStatus;
+use App\Status\OrderStatus;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,17 +18,7 @@ class OrderTaxi
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $fromAddressId;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $toAddressId;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     private $orderDate;
 
@@ -46,28 +28,39 @@ class OrderTaxi
     private $amount;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Client", inversedBy="taxi")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Address", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $fromAddress;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Address", cascade={"persist", "remove"})
+     */
+    private $toAddress;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Client", inversedBy="orderTaxis", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $client;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Taxi", inversedBy="orderTaxis")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Taxi", inversedBy="orderTaxis", cascade={"persist", "remove"})
      */
     private $taxi;
 
     /**
-     * @ORM\Column(type="orderstatus")
+     * @ORM\Column(type="string", length=25)
      */
     private $status;
 
-    public function __construct(Client $client, int $fromAddressId, ?int $toAddressId, ?Taxi $taxi)
+    public function __construct(Client $client, Address $fromAddress, ?Address $toAddress, ?Taxi $taxi)
     {
         $this->client = $client;
-        $this->fromAddressId = $fromAddressId;
-        $this->toAddressId = $toAddressId;
+        $this->fromAddress = $fromAddress;
+        $this->toAddress = $toAddress;
         $this->taxi = $taxi;
-        $this->status = EnumOrderStatus::$static_values[0];
+        $this->status = OrderStatus::CREATED;
         $this->amount = 0;
         $this->setOrderDate(new \DateTime('now'));
     }
@@ -77,36 +70,12 @@ class OrderTaxi
         return $this->id;
     }
 
-    public function getFromAddressId(): ?int
-    {
-        return $this->fromAddressId;
-    }
-
-    public function setFromAddressId(int $fromAddressId): self
-    {
-        $this->fromAddressId = $fromAddressId;
-
-        return $this;
-    }
-
-    public function getToAddressId(): ?int
-    {
-        return $this->toAddressId;
-    }
-
-    public function setToAddressId(?int $toAddressId): self
-    {
-        $this->toAddressId = $toAddressId;
-
-        return $this;
-    }
-
     public function getOrderDate(): ?\DateTimeInterface
     {
         return $this->orderDate;
     }
 
-    public function setOrderDate(?\DateTimeInterface $orderDate): self
+    public function setOrderDate(\DateTimeInterface $orderDate): self
     {
         $this->orderDate = $orderDate;
 
@@ -121,6 +90,30 @@ class OrderTaxi
     public function setAmount(?int $amount): self
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getFromAddress(): ?Address
+    {
+        return $this->fromAddress;
+    }
+
+    public function setFromAddress(?Address $fromAddress): self
+    {
+        $this->fromAddress = $fromAddress;
+
+        return $this;
+    }
+
+    public function getToAddress(): ?Address
+    {
+        return $this->toAddress;
+    }
+
+    public function setToAddress(?Address $toAddress): self
+    {
+        $this->toAddress = $toAddress;
 
         return $this;
     }
@@ -149,16 +142,21 @@ class OrderTaxi
         return $this;
     }
 
-    public function getStatus()
+    public function cancel(): void
     {
-        return $this->status;
+        $this->status = OrderStatus::CANCELLED;
     }
 
-    public function setStatus($status): void
+    public function update(): void
     {
-        $this->status = $status;
+        $this->status = OrderStatus::UPDATED;
     }
-    public function confirm()
+    public function confirm(): void
     {
+        $this->status = OrderStatus::EXECUTED;
+    }
+    public function complete(): void
+    {
+        $this->status = OrderStatus::COMPLETED;
     }
 }

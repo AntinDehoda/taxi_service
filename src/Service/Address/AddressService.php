@@ -11,6 +11,7 @@
 namespace App\Service\Address;
 
 use App\Mapper\AddressMapper;
+use App\Mapper\DistrictMapper;
 use App\Mapper\StreetMapper;
 use App\Model\Address;
 use App\Model\District;
@@ -34,67 +35,78 @@ class AddressService implements AddressServiceInterface
         $this->streetRepository = $streetRepository;
     }
 
-    public function findStreet(string $streetName): ?int
+    public function findStreet(string $streetName): ?Street
     {
-        $streetId = $this->streetRepository->findByName($streetName);
+        $street = $this->streetRepository->findByName($streetName);
 
-        return $streetId;
+        return ($street) ? StreetMapper::entityToModel($street) : null;
     }
 
-    public function findStreetById(int $id): ?Street
+    public function findStreetBy(Street $streetModel): ?Street
     {
-        $street = $this->streetRepository->find($id);
+        $street = $this->streetRepository->find($streetModel);
 
-        return StreetMapper::entityToModel($street);
+        return  ($street) ? StreetMapper::entityToModel($street) : null;
     }
 
-    public function createStreet(string $streetName, ?District $district): int
+    public function createStreet(string $streetName, ?District $district): Street
     {
         $street = new Street($streetName, $district, null);
         $street = $this->streetRepository->save(StreetMapper::modelToEntity($street));
 
-        return $street->getId();
+        return StreetMapper::entityToModel($street);
     }
 
-    public function findAddress(int $streetId, string $number): ?int
+    public function findAddress(Street $street, string $number): ?Address
     {
-        return $this->addressRepository->findAddress($streetId, $number);
+        $address = $this->addressRepository
+            ->findAddress(StreetMapper::modelToEntity($street), $number);
+        return ($address) ? AddressMapper::entityToModel($address) : null;
     }
 
-    public function createAddress(int $streetId, string $number): int
+    public function createAddress(Street $street, string $number): Address
     {
-        $address = new Address($streetId, $number);
-
-        return $this->addressRepository->save(AddressMapper::modelToEntity($address));
+        $address = new Address($street, $number, null);
+        $address = $this->addressRepository->save(AddressMapper::modelToEntity($address));
+        return AddressMapper::entityToModel($address);
     }
-    public function find(?int $id): Address
+    public function find(Address $address): ?Address
     {
-        $entity = $this->addressRepository->find($id);
 
-        return AddressMapper::entityToModel($entity);
+        $entity = $this->addressRepository->find($address);
+
+        return ($entity) ? AddressMapper::entityToModel($entity) : null;
     }
 
     /**
      * The method looks for a street or an address, and if it does not find it, it creates new.
-     *
      * @param string $streetName
      * @param string $number
-     * @param null|District $district
-     *
-     * @return int
+     * @param District|null $district
+     * @return Address
      */
-    public function get(string $streetName, string $number, ?District $district): int
+    public function get(string $streetName, string $number, ?District $district): Address
     {
-        $streetId = $this->findStreet($streetName);
-        $addressId = null;
+        $street = $this->findStreet($streetName);
 
-        if (null == $streetId) {
-            $streetId = $this->createStreet($streetName, $district);
-            $addressId = $this->createAddress($streetId, $number);
+        $address = null;
+
+        if (null == $street) {
+            $street = $this->createStreet($streetName, $district);
+            $address = $this->createAddress($street, $number);
         } else {
-            $addressId = $this->findAddress($streetId, $number) ?? $this->createAddress($streetId, $number);
+            $address = $this->findAddress($street, $number) ?? $this->createAddress($street, $number);
+            if (null == $street->getDistrict() && null != $district) {
+
+                $streetEntity = $this->streetRepository->find($street->getId());
+                $streetEntity->setDistrict(DistrictMapper::modelToEntity($district));
+                $street = $this->streetRepository->update($streetEntity);
+                $address->setStreet(StreetMapper::entityToModel($street));
+
+            }
+
         }
 
-        return $addressId;
+        return $address;
     }
 }

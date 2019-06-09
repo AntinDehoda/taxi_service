@@ -17,8 +17,8 @@ interface OrderServiceInterface
 {
     public function create(OrderDto $orderDto): OrderTaxi;
     public function edit(int $id): ?OrderDto;
-    public function find(int $id): ?OrderTaxi;
-    public function confirm(int $id): void;
+    public function find(int $id): ?\App\Entity\OrderTaxi;
+    public function confirm(\App\Entity\OrderTaxi $order): void;
     public function cancel(int $id): string;
     public function update(OrderDto $orderDto, int $id): void;
 }

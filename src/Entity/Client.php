@@ -1,13 +1,5 @@
 <?php
 
-/*
- *
- * (c) Anton Dehoda <dehoda@ukr.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,47 +19,42 @@ class Client
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=25)
      */
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=25, nullable=true)
      */
     private $lastName;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=25)
      */
     private $phone;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=25, nullable=true)
      */
     private $email;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Address", cascade={"persist", "remove"})
      */
-    private $homeAddressId;
+    private $homeAddress;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderTaxi", mappedBy="client", orphanRemoval=true, cascade={"persist", "remove"})
      */
-    private $currentOrderId;
+    private $orderTaxis;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderTaxi", mappedBy="client", cascade={"persist", "remove"})
-     */
-    private $taxi;
     public function __construct(string $phone, string $firstName, ?string $lastName, ?int $id)
     {
         $this->phone = $phone;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->id = $id;
-        $this->taxi = new ArrayCollection();
-        $this->currentOrderId = 0;
+        $this->orderTaxis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -123,26 +110,14 @@ class Client
         return $this;
     }
 
-    public function getHomeAddressId(): ?int
+    public function getHomeAddress(): ?Address
     {
-        return $this->homeAddressId;
+        return $this->homeAddress;
     }
 
-    public function setHomeAddressId(?int $homeAddressId): self
+    public function setHomeAddress(?Address $homeAddress): self
     {
-        $this->homeAddressId = $homeAddressId;
-
-        return $this;
-    }
-
-    public function getCurrentOrderId(): ?int
-    {
-        return $this->currentOrderId;
-    }
-
-    public function setCurrentOrderId(int $currentOrderId): self
-    {
-        $this->currentOrderId = $currentOrderId;
+        $this->homeAddress = $homeAddress;
 
         return $this;
     }
@@ -150,28 +125,28 @@ class Client
     /**
      * @return Collection|OrderTaxi[]
      */
-    public function getTaxi(): Collection
+    public function getOrderTaxis(): Collection
     {
-        return $this->taxi;
+        return $this->orderTaxis;
     }
 
-    public function addTaxi(OrderTaxi $taxi): self
+    public function addOrderTaxi(OrderTaxi $orderTaxi): self
     {
-        if (!$this->taxi->contains($taxi)) {
-            $this->taxi[] = $taxi;
-            $taxi->setClient($this);
+        if (!$this->orderTaxis->contains($orderTaxi)) {
+            $this->orderTaxis[] = $orderTaxi;
+            $orderTaxi->setClient($this);
         }
 
         return $this;
     }
 
-    public function removeTaxi(OrderTaxi $taxi): self
+    public function removeOrderTaxi(OrderTaxi $orderTaxi): self
     {
-        if ($this->taxi->contains($taxi)) {
-            $this->taxi->removeElement($taxi);
+        if ($this->orderTaxis->contains($orderTaxi)) {
+            $this->orderTaxis->removeElement($orderTaxi);
             // set the owning side to null (unless already changed)
-            if ($taxi->getClient() === $this) {
-                $taxi->setClient(null);
+            if ($orderTaxi->getClient() === $this) {
+                $orderTaxi->setClient(null);
             }
         }
 

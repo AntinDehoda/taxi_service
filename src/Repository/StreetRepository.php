@@ -1,13 +1,5 @@
 <?php
 
-/*
- *
- * (c) Anton Dehoda <dehoda@ukr.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Repository;
 
 use App\Entity\District;
@@ -17,8 +9,8 @@ use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method null|Street find($id, $lockMode = null, $lockVersion = null)
- * @method null|Street findOneBy(array $criteria, array $orderBy = null)
+ * @method Street|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Street|null findOneBy(array $criteria, array $orderBy = null)
  * @method Street[]    findAll()
  * @method Street[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -28,38 +20,72 @@ class StreetRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Street::class);
     }
-
-    public function findByName($value): ?int
+    public function findByName($name): ?Street
     {
         try {
-            $result = $this->createQueryBuilder('s')
-                ->select('s.id')
+            return $this->createQueryBuilder('s')
                 ->andWhere('s.name = :val')
-                ->setParameter('val', $value)
+                ->setParameter('val', $name)
                 ->getQuery()
                 ->getOneOrNullResult()
             ;
         } catch (NonUniqueResultException $e) {
             return null;
         }
-
-        return $result['id'];
     }
     public function save(Street $street): Street
     {
         $em = $this->getEntityManager();
-        $districtExist= $street->getDistrict();
+        $district= $street->getDistrict();
 
-        if ($districtExist) {
-            $DistrictId = $districtExist->getId();
-            /** @var District $district */
-            $district = $em->getRepository('App\Entity\District')->findById($DistrictId);
-            $street->setDistrict($district);
+        if ($district) {
+            /** @var District $districtEntity */
+            $districtEntity = $em->getRepository('App\Entity\District')->find($district);
+            $street->setDistrict($districtEntity);
         }
-        $em = $this->getEntityManager();
         $em->persist($street);
         $em->flush();
 
         return $street;
     }
+    public function update(Street $street)
+    {
+        $em = $this->getEntityManager();
+        $district= $street->getDistrict();
+        if ($district) {
+            /** @var District $districtEntity */
+            $districtEntity = $em->getRepository('App\Entity\District')->find($district);
+            $street->setDistrict($districtEntity);
+        }
+        $em->flush();
+        return $street;
+    }
+    // /**
+    //  * @return Street[] Returns an array of Street objects
+    //  */
+    /*
+    public function findByExampleField($value)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('s.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    */
+
+    /*
+    public function findOneBySomeField($value): ?Street
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
 }

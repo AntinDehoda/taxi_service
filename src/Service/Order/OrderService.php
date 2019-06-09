@@ -10,7 +10,6 @@
 
 namespace App\Service\Order;
 
-use App\DBAL\EnumOrderStatus;
 use App\Entity\Taxi;
 use App\Form\DTO\OrderDto;
 use App\Mapper\DistrictMapper;
@@ -86,31 +85,32 @@ class OrderService implements OrderServiceInterface
         /** @var District
          * Search for an entity District
          */
-        $district = DistrictMapper::entityToModel($orderDto->district);
+        $district = DistrictMapper::entityToModel($this->districtRepository->find($orderDto->district));
 
         /** @var int
          * Getting id entity AddressFrom
          */
-        $addressFromId =
+        $addressFromModel =
             $this->addressService
                 ->get($orderDto->streetFrom, $orderDto->streetFromNumber, $district);
         /** @var null|int
          * Getting id entity AddressTo
          */
-        $addressToId = null;
+        $addressToModel = null;
 
         if ($orderDto->streetTo) {
-            $addressToId =
+            $addressToModel =
                 $this->addressService
                     ->get($orderDto->streetTo, $orderDto->streetToNumber, null);
         }
         /** @var Taxi
          * Search for an entity Taxi by District id
          */
-        $taxiEntity = $this->taxiRepository->findByDistrict($district->getId());
+        $taxiEntity = $this->taxiRepository
+            ->findByDistrict(DistrictMapper::modelToEntity($addressFromModel->getStreet()->getDistrict()));
         $taxiModel = ($taxiEntity) ? TaxiMapper::entityToModel($taxiEntity) : null;
 
-        return new OrderTaxi($clientModel, $addressFromId, $addressToId, $taxiModel, null);
+        return new OrderTaxi($clientModel, $addressFromModel, $addressToModel, $taxiModel, null);
     }
 
     /** Create a taxi order
@@ -133,25 +133,25 @@ class OrderService implements OrderServiceInterface
      */
     public function edit(int $id): ?OrderDto
     {
-        $orderModel =  $this->orderTaxiRepository->find($id);
+        $order =  $this->orderTaxiRepository->find($id);
+        $orderModel = OrderMapper::entityToModel($order);
 
         if (null != $orderModel) {
-            $addressFrom = $this->addressService->find($orderModel->getFromAddressId());
-            $streetFrom = $this->addressService->findStreetById($addressFrom->getStreet());
-            $district = $streetFrom->getDistrict();
-
             $dto = new OrderDto();
+            $addressFrom = $orderModel->getFromAddress();
+            $streetFrom = $addressFrom->getStreet();
+
             $dto->firstName = $orderModel->getClient()->getFirstName();
             $dto->lastName = $orderModel->getClient()->getLastName();
             $dto->phone = $orderModel->getClient()->getPhone();
             $dto->streetFrom = $streetFrom->getName();
             $dto->streetFromNumber = $addressFrom->getHouse();
-            $dto->district = $district ? $this->districtRepository->findById($district->getId()) : null;
+            $dto->district = $streetFrom->getDistrict();
 
-            $addressTo = $this->addressService->find($orderModel->getToAddressId());
+            $addressTo = $orderModel->getToAddress();
 
             if (null != $addressTo) {
-                $streetTo = $this->addressService->findStreetById($addressTo->getStreet());
+                $streetTo = $addressTo->getStreet();
                 $dto->streetTo = $streetTo->getName();
                 $dto->streetToNumber = $addressTo->getHouse();
             }
@@ -160,25 +160,26 @@ class OrderService implements OrderServiceInterface
         }
     }
 
+
     /** Search for an existing order
      * @param int $id
      *
      * @return null|OrderTaxi
      */
-    public function find(int $id): ?OrderTaxi
+    public function find(int $id): ?\App\Entity\OrderTaxi
     {
         $entity = $this->orderTaxiRepository->find($id);
-
-        return OrderMapper::entityToModel($entity);
+return $entity;
+//        return OrderMapper::entityToModel($entity);
     }
 
     /** Order confirmation. Order status changes to executed
-     * @param int $id
+     * @param OrderTaxi $order
      */
-    public function confirm(int $id): void
+    public function confirm(\App\Entity\OrderTaxi $order): void
     {
-        $order = $this->orderTaxiRepository->find($id);
-        $order->setStatus(EnumOrderStatus::$static_values[1]);
+//        $order = $this->orderTaxiRepository->find($id);
+        $order->confirm();
         $this->orderTaxiRepository->update();
     }
 
@@ -190,7 +191,7 @@ class OrderService implements OrderServiceInterface
     public function cancel(int $id): string
     {
         $order = $this->orderTaxiRepository->find($id);
-        $order->setStatus(EnumOrderStatus::$static_values[3]);
+        $order->cancel();
         $this->orderTaxiRepository->update();
 
         return (string) $order->getClient();
@@ -205,7 +206,7 @@ class OrderService implements OrderServiceInterface
         $orderModel = $this->get($orderDto);
         $orderEntity = $this->orderTaxiRepository->find($id);
         $orderEntity = OrderMapper::updateEntity($orderEntity, $orderModel);
-        $orderEntity->setStatus(EnumOrderStatus::$static_values[4]);
+        $orderEntity->update();
         $this->orderTaxiRepository->updateOrder($orderEntity);
     }
 }

@@ -18,7 +18,7 @@ class Taxi
     private $firstName;
     private $lastName;
     private $phone;
-    private $districtId;
+    private $district;
     private $car;
     private $orderTaxis;
 
@@ -67,14 +67,14 @@ class Taxi
         $this->phone = $phone;
     }
 
-    public function getDistrictId()
+    public function getDistrict()
     {
-        return $this->districtId;
+        return $this->district;
     }
 
-    public function setDistrictId($districtId): void
+    public function setDistrict($district): void
     {
-        $this->districtId = $districtId;
+        $this->district = $district;
     }
 
     public function getCar(): string

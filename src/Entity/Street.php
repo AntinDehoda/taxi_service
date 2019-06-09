@@ -1,13 +1,5 @@
 <?php
 
-/*
- *
- * (c) Anton Dehoda <dehoda@ukr.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -25,20 +17,20 @@ class Street
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=25)
      */
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\District", inversedBy="streets")
+     * @ORM\ManyToOne(targetEntity="App\Entity\District", inversedBy="streets", cascade={"persist", "remove"})
      */
     private $district;
 
-
-    public function __construct(string $name, ?District $district)
+    public function __construct(string $name, ?District $district, ?int $id)
     {
         $this->name = $name;
         $this->district = $district;
+        $this->id = $id;
     }
 
     public function getId(): ?int
@@ -68,5 +60,9 @@ class Street
         $this->district = $district;
 
         return $this;
+    }
+    public function __toString()
+    {
+        return 'Street: ' . $this->getName();
     }
 }

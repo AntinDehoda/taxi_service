@@ -1,13 +1,5 @@
 <?php
 
-/*
- *
- * (c) Anton Dehoda <dehoda@ukr.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -25,12 +17,7 @@ class Address
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $streetId;
-
-    /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=25)
      */
     private $house;
 
@@ -39,10 +26,17 @@ class Address
      */
     private $apartment;
 
-    public function __construct(int $streetId, string $house)
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Street", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $street;
+
+    public function __construct(Street $street, string $house, ?int $id)
     {
-        $this->streetId = $streetId;
+        $this->street = $street;
         $this->house = $house;
+        $this->id = $id;
     }
 
     public function getId(): ?int
@@ -50,24 +44,12 @@ class Address
         return $this->id;
     }
 
-    public function getStreetId(): ?int
-    {
-        return $this->streetId;
-    }
-
-    public function setStreetId(int $streetId): self
-    {
-        $this->streetId = $streetId;
-
-        return $this;
-    }
-
-    public function getHouse(): ?int
+    public function getHouse(): ?string
     {
         return $this->house;
     }
 
-    public function setHouse(int $house): self
+    public function setHouse(string $house): self
     {
         $this->house = $house;
 
@@ -84,5 +66,21 @@ class Address
         $this->apartment = $apartment;
 
         return $this;
+    }
+
+    public function getStreet(): ?Street
+    {
+        return $this->street;
+    }
+
+    public function setStreet(?Street $street): self
+    {
+        $this->street = $street;
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return 'Address: ' . (string) $this->getStreet() . ', House: ' . $this->getHouse();
     }
 }

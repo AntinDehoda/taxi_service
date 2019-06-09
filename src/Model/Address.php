@@ -13,18 +13,19 @@ namespace App\Model;
 class Address
 {
     private $id;
-    private $streetId;
+    private $street;
     private $house;
     private $apartment;
 
-    public function __construct(int $streetId, string $house)
+    public function __construct(Street $street, string $house, ?int $id)
     {
-        $this->streetId = $streetId;
+        $this->street = $street;
         $this->house = $house;
+        $this->id = $id;
     }
 
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -36,15 +37,15 @@ class Address
     }
 
 
-    public function getStreet(): int
+    public function getStreet(): Street
     {
-        return $this->streetId;
+        return $this->street;
     }
 
 
     public function setStreet($streetId): void
     {
-        $this->streetId = $streetId;
+        $this->street = $streetId;
     }
 
 
@@ -69,5 +70,10 @@ class Address
     public function setApartment($apartment): void
     {
         $this->apartment = $apartment;
+    }
+
+    public function __toString()
+    {
+        return 'Address: ' . (string) $this->getStreet() . ', House: ' . $this->getHouse();
     }
 }

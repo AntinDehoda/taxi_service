@@ -17,13 +17,14 @@ class AddressMapper
 {
     public static function entityToModel(Address $entity): AddressModel
     {
-        $model = new AddressModel($entity->getStreetId(), $entity->getHouse());
-
+        $street = StreetMapper::entityToModel($entity->getStreet());
+        $model = new AddressModel($street, $entity->getHouse(), $entity->getId());
         return $model;
     }
     public static function modelToEntity(AddressModel $model): Address
     {
-        $entity = new Address($model->getStreet(), $model->getHouse());
+        $street = StreetMapper::modelToEntity($model->getStreet());
+        $entity = new Address($street, $model->getHouse(), $model->getId());
 
         return $entity;
     }

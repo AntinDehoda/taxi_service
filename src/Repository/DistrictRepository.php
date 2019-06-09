@@ -1,13 +1,5 @@
 <?php
 
-/*
- *
- * (c) Anton Dehoda <dehoda@ukr.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Repository;
 
 use App\Entity\District;
@@ -16,8 +8,8 @@ use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method null|District find($id, $lockMode = null, $lockVersion = null)
- * @method null|District findOneBy(array $criteria, array $orderBy = null)
+ * @method District|null find($id, $lockMode = null, $lockVersion = null)
+ * @method District|null findOneBy(array $criteria, array $orderBy = null)
  * @method District[]    findAll()
  * @method District[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -27,7 +19,6 @@ class DistrictRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, District::class);
     }
-
     public function findById($id): ?District
     {
         try {

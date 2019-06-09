@@ -1,13 +1,5 @@
 <?php
 
-/*
- *
- * (c) Anton Dehoda <dehoda@ukr.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,32 +19,32 @@ class Taxi
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=25)
      */
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=25, nullable=true)
      */
     private $lastName;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=25)
      */
     private $phone;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $districtId;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=25, nullable=true)
      */
     private $car;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderTaxi", mappedBy="taxi")
+     * @ORM\ManyToOne(targetEntity="App\Entity\District", inversedBy="taxis", cascade={"persist", "remove"})
+     */
+    private $district;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderTaxi", mappedBy="taxi", cascade={"persist", "remove"})
      */
     private $orderTaxis;
 
@@ -76,7 +68,7 @@ class Taxi
         return $this->firstName;
     }
 
-    public function setFirstName(?string $firstName): self
+    public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
 
@@ -107,26 +99,26 @@ class Taxi
         return $this;
     }
 
-    public function getDistrictId(): ?int
-    {
-        return $this->districtId;
-    }
-
-    public function setDistrictId(?int $districtId): self
-    {
-        $this->districtId = $districtId;
-
-        return $this;
-    }
-
     public function getCar(): ?string
     {
         return $this->car;
     }
 
-    public function setCar(string $car): self
+    public function setCar(?string $car): self
     {
         $this->car = $car;
+
+        return $this;
+    }
+
+    public function getDistrict(): ?District
+    {
+        return $this->district;
+    }
+
+    public function setDistrict(?District $district): self
+    {
+        $this->district = $district;
 
         return $this;
     }
@@ -153,7 +145,7 @@ class Taxi
     {
         if ($this->orderTaxis->contains($orderTaxi)) {
             $this->orderTaxis->removeElement($orderTaxi);
-
+            // set the owning side to null (unless already changed)
             if ($orderTaxi->getTaxi() === $this) {
                 $orderTaxi->setTaxi(null);
             }

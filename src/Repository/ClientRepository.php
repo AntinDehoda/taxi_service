@@ -1,13 +1,5 @@
 <?php
 
-/*
- *
- * (c) Anton Dehoda <dehoda@ukr.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Repository;
 
 use App\Entity\Client;
@@ -16,8 +8,8 @@ use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method null|Client find($id, $lockMode = null, $lockVersion = null)
- * @method null|Client findOneBy(array $criteria, array $orderBy = null)
+ * @method Client|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Client|null findOneBy(array $criteria, array $orderBy = null)
  * @method Client[]    findAll()
  * @method Client[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -27,7 +19,6 @@ class ClientRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Client::class);
     }
-
     public function findByPhone(string $phone): ?Client
     {
         try {
@@ -55,4 +46,32 @@ class ClientRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         $em->flush();
     }
+    // /**
+    //  * @return Client[] Returns an array of Client objects
+    //  */
+    /*
+    public function findByExampleField($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    */
+
+    /*
+    public function findOneBySomeField($value): ?Client
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
 }
