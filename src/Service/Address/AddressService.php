@@ -61,6 +61,7 @@ class AddressService implements AddressServiceInterface
     {
         $address = $this->addressRepository
             ->findAddress(StreetMapper::modelToEntity($street), $number);
+
         return ($address) ? AddressMapper::entityToModel($address) : null;
     }
 
@@ -68,11 +69,11 @@ class AddressService implements AddressServiceInterface
     {
         $address = new Address($street, $number, null);
         $address = $this->addressRepository->save(AddressMapper::modelToEntity($address));
+
         return AddressMapper::entityToModel($address);
     }
     public function find(Address $address): ?Address
     {
-
         $entity = $this->addressRepository->find($address);
 
         return ($entity) ? AddressMapper::entityToModel($entity) : null;
@@ -80,9 +81,11 @@ class AddressService implements AddressServiceInterface
 
     /**
      * The method looks for a street or an address, and if it does not find it, it creates new.
+     *
      * @param string $streetName
      * @param string $number
-     * @param District|null $district
+     * @param null|District $district
+     *
      * @return Address
      */
     public function get(string $streetName, string $number, ?District $district): Address
@@ -96,15 +99,13 @@ class AddressService implements AddressServiceInterface
             $address = $this->createAddress($street, $number);
         } else {
             $address = $this->findAddress($street, $number) ?? $this->createAddress($street, $number);
-            if (null == $street->getDistrict() && null != $district) {
 
+            if (null == $street->getDistrict() && null != $district) {
                 $streetEntity = $this->streetRepository->find($street->getId());
                 $streetEntity->setDistrict(DistrictMapper::modelToEntity($district));
                 $street = $this->streetRepository->update($streetEntity);
                 $address->setStreet(StreetMapper::entityToModel($street));
-
             }
-
         }
 
         return $address;

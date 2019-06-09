@@ -19,6 +19,7 @@ class StreetMapper
     {
         $district = ($entity->getDistrict()) ? DistrictMapper::entityToModel($entity->getDistrict()) : null;
         $model = new StreetModel($entity->getName(), $district, $entity->getId());
+
         return $model;
     }
 
@@ -26,6 +27,7 @@ class StreetMapper
     {
         $district = ($model->getDistrict()) ? DistrictMapper::modelToEntity($model->getDistrict()) : null;
         $entity =  new Street($model->getName(), $district, $model->getId());
+
         return $entity;
     }
 }

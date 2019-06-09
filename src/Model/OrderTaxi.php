@@ -63,6 +63,7 @@ class OrderTaxi
     public function setFromAddress($fromAddress): self
     {
         $this->fromAddress = $fromAddress;
+
         return $this;
     }
 
@@ -76,6 +77,7 @@ class OrderTaxi
     public function setToAddress($toAddress): self
     {
         $this->toAddress = $toAddress;
+
         return $this;
     }
 
@@ -130,5 +132,4 @@ class OrderTaxi
     {
         $this->status = OrderStatus::COMPLETED;
     }
-
 }

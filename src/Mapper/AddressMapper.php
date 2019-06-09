@@ -19,6 +19,7 @@ class AddressMapper
     {
         $street = StreetMapper::entityToModel($entity->getStreet());
         $model = new AddressModel($street, $entity->getHouse(), $entity->getId());
+
         return $model;
     }
     public static function modelToEntity(AddressModel $model): Address
