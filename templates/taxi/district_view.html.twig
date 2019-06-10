@@ -1,15 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Taxi Order{% endblock %}
+{% block title %}Taxis in district{% endblock %}
 
 {% block body %}
 
 
 <div class="example-wrapper">
-    <h1>Taxi Order</h1>
-    <h3>Your {{ taxi }}! ✅</h3>
-    <h3> {{ client }}! ✅</h3>
-    <h3> {{ address }}! ✅</h3>
+    <h1>Our Drivers in district</h1>
+    <h3>Select a district to search for taxi cars.</h3>
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}

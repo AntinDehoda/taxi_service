@@ -41,22 +41,25 @@ class TaxiRepository extends ServiceEntityRepository
             return null;
         }
     }
-    // /**
-    //  * @return Taxi[] Returns an array of Taxi objects
-    //  */
-    /*
-    public function findByExampleField($value)
+
+
+    /**
+     * @param District $district
+     *
+     * @return Taxi[] Returns an array of Taxi objects
+     */
+    public function findAllByDistrict(District $district): array
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('t.district = :val')
+            ->setParameter('val', $district)
             ->orderBy('t.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?Taxi

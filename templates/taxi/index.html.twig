@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Our Drivers :{% endblock %}
+{% block title %}Our Drivers{% endblock %}
 
 {% block body %}
     <section class="drivers">
+        <h1>Our Drivers</h1>
         {% for taxi in taxis %}
             <p>
                 <span class="category-link">{{ taxi.firstName }} </span>

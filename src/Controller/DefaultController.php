@@ -42,7 +42,7 @@ final class DefaultController extends AbstractController
             $formDto = $form->getData();
             $orderTaxi = $orderService->create($formDto);
 
-            return $this->redirectToRoute('order', [
+            return $this->redirectToRoute('action', [
                 'id' => $orderTaxi->getId(),
             ]);
         }

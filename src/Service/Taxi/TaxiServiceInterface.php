@@ -11,8 +11,10 @@
 namespace App\Service\Taxi;
 
 use App\Collection\TaxiCollection;
+use App\Entity\District;
 
 interface TaxiServiceInterface
 {
     public function getAll(): ?TaxiCollection;
+    public function getAllByDistrict(District $district): ?TaxiCollection;
 }
