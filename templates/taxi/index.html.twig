@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Our Drivers :{% endblock %}
+
+{% block body %}
+    <section class="drivers">
+        {% for taxi in taxis %}
+            <p>
+                <span class="category-link">{{ taxi.firstName }} </span>
+                <span class="category-link">{{ taxi.lastName }}, </span>
+                <span class="category-link">phone: {{ taxi.phone }}, </span>
+                <span class="category-link">car: {{ taxi.car }}</span>
+            </p>
+        {% endfor %}
+    </section>
+{% endblock %}

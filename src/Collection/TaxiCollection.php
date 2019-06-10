@@ -21,7 +21,7 @@ class TaxiCollection implements \IteratorAggregate
         $this->allTaxi = $allTaxi;
     }
 
-    public function addClient(Taxi $taxi): void
+    public function add(Taxi $taxi): void
     {
         $this->allTaxi[] = $taxi;
     }

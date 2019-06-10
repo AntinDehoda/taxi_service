@@ -14,7 +14,8 @@ time {
 /* HEADER */
 
 header.navbar {
-    background-color: #DC3543;
+    background-color: #0d5aa7;
+    text-align: center;
 }
 
 header.navbar .navbar-brand {

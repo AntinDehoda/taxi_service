@@ -17,11 +17,19 @@ class TaxiMapper
 {
     public static function entityToModel(Taxi $entity): TaxiModel
     {
-        return new TaxiModel($entity->getPhone(), $entity->getFirstName(), $entity->getId());
+        $model = new TaxiModel($entity->getPhone(), $entity->getFirstName(), $entity->getId());
+        $model->setLastName($entity->getLastName());
+        $model->setCar($entity->getCar());
+
+        return $model;
     }
 
     public static function modelToEntity(TaxiModel $model): Taxi
     {
-        return new Taxi($model->getPhone(), $model->getFirstName(), $model->getId());
+        $entity = new Taxi($model->getPhone(), $model->getFirstName(), $model->getId());
+        $entity->setLastName($model->getLastName());
+        $entity->setCar($model->getCar());
+
+        return $entity;
     }
 }
