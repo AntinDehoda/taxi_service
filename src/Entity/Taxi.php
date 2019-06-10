@@ -163,6 +163,6 @@ class Taxi
     }
     public function __toString()
     {
-        return 'Driver: ' . $this->getFirstName() . ', phone: ' . $this->getPhone();
+        return 'TaxiDriver: ' . $this->getFirstName() . ', phone: ' . $this->getPhone();
     }
 }

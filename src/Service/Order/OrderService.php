@@ -10,7 +10,6 @@
 
 namespace App\Service\Order;
 
-use App\Entity\Taxi;
 use App\Form\DTO\OrderDto;
 use App\Mapper\DistrictMapper;
 use App\Mapper\OrderMapper;
@@ -18,6 +17,8 @@ use App\Mapper\TaxiMapper;
 use App\Model\Client;
 use App\Model\District;
 use App\Model\OrderTaxi;
+use App\Entity\OrderTaxi as OrderEntity;
+use App\Entity\Taxi;
 use App\Service\Address\AddressServiceInterface;
 use App\Service\Client\ClientServiceInterface;
 use App\Repository\OrderTaxiRepository;
@@ -166,36 +167,33 @@ class OrderService implements OrderServiceInterface
      *
      * @return null|OrderTaxi
      */
-    public function find(int $id): ?\App\Entity\OrderTaxi
+    public function find(int $id): ?OrderEntity
     {
         $entity = $this->orderTaxiRepository->find($id);
 
         return $entity;
-//        return OrderMapper::entityToModel($entity);
     }
 
     /** Order confirmation. Order status changes to executed
-     * @param OrderTaxi $order
+     * @param OrderEntity $order
      */
-    public function confirm(\App\Entity\OrderTaxi $order): void
+    public function confirm(OrderEntity $order): void
     {
-//        $order = $this->orderTaxiRepository->find($id);
         $order->confirm();
         $this->orderTaxiRepository->update();
     }
 
     /** Order cancellation. Order status changes to cancelled. Returns client information
-     * @param int $id
+     * @param OrderEntity $order
      *
      * @return string
      */
-    public function cancel(int $id): string
+    public function cancel(OrderEntity $order): string
     {
-        $order = $this->orderTaxiRepository->find($id);
         $order->cancel();
         $this->orderTaxiRepository->update();
 
-        return (string) $order->getClient();
+        return (string) $order->getClient() . ', ' . (string) $order->getFromAddress();
     }
 
     /** Order update. Order status changes to updated

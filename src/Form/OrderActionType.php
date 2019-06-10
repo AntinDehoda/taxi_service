@@ -16,12 +16,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\DTO\OrderDto;
 
-final class OrderConfirmType extends AbstractType
+final class OrderActionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-
+            ->add('order_confirm', SubmitType::class, ['label' => 'Confirm Order'])
             ->add('order_edit', SubmitType::class, ['label' => 'Edit Order'])
             ->add('order_cancel', SubmitType::class, ['label' => 'Cancel Order'])
         ;

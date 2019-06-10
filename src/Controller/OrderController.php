@@ -16,8 +16,9 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Form\OrderConfirmType;
+use App\Form\OrderActionType;
 use App\Form\OrderEditType;
+use App\Form\OrderConfirmType;
 
 /**
  * The controller opens the order management pages (pages of confirmation, editing, canceling)
@@ -34,14 +35,14 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/order/{id}", name="order", requirements={"id": "\d+"})
+     * @Route("/order/{id}", name="action", requirements={"id": "\d+"})
      *
      * @param Request $request
      * @param int $id
      *
      * @return Response
      */
-    public function confirm(Request $request, int $id): Response
+    public function action(Request $request, int $id): Response
     {
         $order = $this->orderService->find($id);
 
@@ -49,23 +50,25 @@ class OrderController extends AbstractController
             throw $this->createNotFoundException('There is no order with id=' . $id);
         }
         /** @var Form $form */
-        $form = $this->createForm(OrderConfirmType::class);
+        $form = $this->createForm(OrderActionType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             /**
-             * The confirmation page has 3 buttons (confirm, edit and cancel).
+             * The order action page has 3 buttons (confirm, edit and cancel).
              *
              * @var string is formed depending on which button is pressed
              */
             $nextAction = $form->getClickedButton()->getName();
 
-            if ('order' == $nextAction) {
+            if ('order_confirm' == $nextAction) {
                 $this->addFlash('success', 'Your order was successfully confirmed!');
                 $this->orderService->confirm($order);
             } elseif ('order_cancel' == $nextAction) {
+                $cancelInfo = $this->orderService->cancel($order);
                 $this->addFlash('success', 'Your order was successfully cancelled!');
+                $this->addFlash('success', $cancelInfo);
             }
 
             return $this->redirectToRoute($nextAction, [
@@ -73,7 +76,7 @@ class OrderController extends AbstractController
             ]);
         }
 
-        return $this->render('order/order.html.twig', [
+        return $this->render('order/action.html.twig', [
             'form' => $form->createView(),
             'client' => (string) $order->getClient(),
             'taxi' => (string) $order->getTaxi(),
@@ -102,7 +105,7 @@ class OrderController extends AbstractController
             $this->orderService->update($orderDto, $id);
             $this->addFlash('success', 'Your order was successfully updated!');
 
-            return $this->redirectToRoute('order', [
+            return $this->redirectToRoute('action', [
                 'id' => $id,
             ]);
         }
@@ -111,24 +114,61 @@ class OrderController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+
     /**
-     * @Route("/order/{id}/cancel", name="order_cancel", requirements={"id": "\d+"})
+     * @Route("/order/{id}/confirm", name="order_confirm", requirements={"id": "\d+"})
      *
      * @param Request $request
      * @param int $id
      *
      * @return Response
      */
-    public function cancel(Request $request, int $id): Response
+    public function confirm(Request $request, int $id): Response
     {
-        $client = $this->orderService->cancel($id);
+        $order = $this->orderService->find($id);
 
-        if (null == $client) {
+        if (null == $order) {
             throw $this->createNotFoundException('There is no order with id=' . $id);
         }
+        /** @var Form $form */
+        $form = $this->createForm(OrderConfirmType::class);
+        $form->handleRequest($request);
 
-        return $this->render('order/cancel.html.twig', [
-            'client' => $client,
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            /**
+             * The confirmation page has 2 buttons (edit and cancel).
+             *
+             * @var string is formed depending on which button is pressed
+             */
+            $nextAction = $form->getClickedButton()->getName();
+
+            if ('order_cancel' == $nextAction) {
+                $cancelInfo = $this->orderService->cancel($order);
+                $this->addFlash('success', 'Your order was successfully cancelled!');
+                $this->addFlash('success', $cancelInfo);
+            }
+
+            return $this->redirectToRoute($nextAction, [
+                'id' => $id,
+            ]);
+        }
+
+        return $this->render('order/confirm.html.twig', [
+            'form' => $form->createView(),
+            'client' => (string) $order->getClient(),
+            'taxi' => (string) $order->getTaxi(),
+            'address' => (string) $order->getFromAddress(),
         ]);
+    }
+    /**
+     * @Route("/order/{id}/cancel", name="order_cancel", requirements={"id": "\d+"})
+     *
+     * @return Response
+     */
+    public function cancel(): Response
+    {
+        return $this->render('order/cancel.html.twig');
     }
 }

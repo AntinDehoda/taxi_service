@@ -11,14 +11,15 @@
 namespace App\Service\Order;
 
 use App\Form\DTO\OrderDto;
-use App\Model\OrderTaxi;
+use App\Model\OrderTaxi as OrderModel;
+use App\Entity\OrderTaxi;
 
 interface OrderServiceInterface
 {
-    public function create(OrderDto $orderDto): OrderTaxi;
-    public function edit(int $id): ?OrderDto;
-    public function find(int $id): ?\App\Entity\OrderTaxi;
-    public function confirm(\App\Entity\OrderTaxi $order): void;
-    public function cancel(int $id): string;
+    public function create(OrderDto $orderDto): OrderModel;
     public function update(OrderDto $orderDto, int $id): void;
+    public function edit(int $id): ?OrderDto;
+    public function find(int $id): ?OrderTaxi;
+    public function confirm(OrderTaxi $order): void;
+    public function cancel(OrderTaxi $order): string;
 }
