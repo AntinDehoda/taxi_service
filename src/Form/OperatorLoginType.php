@@ -10,12 +10,13 @@
 
 namespace App\Form;
 
+use App\Form\DTO\OperatorDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Form\DTO\OrderDto;
 
 final class OperatorLoginType extends AbstractType
 {
@@ -23,13 +24,13 @@ final class OperatorLoginType extends AbstractType
     {
         $builder
             ->add('login', TextType::class)
-            ->add('pass', TextType::class)
-            ->add('login', SubmitType::class, ['label' => 'login'])
+            ->add('pass', PasswordType::class)
+            ->add('sing', SubmitType::class, ['label' => 'sing in'])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => OrderDto::class]);
+        $resolver->setDefaults(['data_class' => OperatorDto::class]);
     }
 }
