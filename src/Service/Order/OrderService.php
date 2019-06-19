@@ -10,6 +10,7 @@
 
 namespace App\Service\Order;
 
+use App\Collection\OrderCollection;
 use App\Form\DTO\OrderDto;
 use App\Mapper\DistrictMapper;
 use App\Mapper\OrderMapper;
@@ -207,5 +208,16 @@ class OrderService implements OrderServiceInterface
         $orderEntity = OrderMapper::updateEntity($orderEntity, $orderModel);
         $orderEntity->update();
         $this->orderTaxiRepository->updateOrder($orderEntity);
+    }
+
+    public function getAll(): OrderCollection
+    {
+        $orders = new OrderCollection();
+
+        foreach ($this->orderTaxiRepository->findAll() as $orderTaxi) {
+            $orders->addOrder(OrderMapper::entityToModel($orderTaxi));
+        }
+
+        return $orders;
     }
 }

@@ -13,6 +13,7 @@ namespace App\Service\Order;
 use App\Form\DTO\OrderDto;
 use App\Model\OrderTaxi as OrderModel;
 use App\Entity\OrderTaxi;
+use App\Collection\OrderCollection;
 
 interface OrderServiceInterface
 {
@@ -22,4 +23,5 @@ interface OrderServiceInterface
     public function find(int $id): ?OrderTaxi;
     public function confirm(OrderTaxi $order): void;
     public function cancel(OrderTaxi $order): string;
+    public function getAll(): OrderCollection;
 }

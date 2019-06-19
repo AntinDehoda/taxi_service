@@ -28,6 +28,6 @@ class OrderCollection implements \IteratorAggregate
 
     public function getIterator(): iterable
     {
-        return new \ArrayIterator($this->allTaxi);
+        return new \ArrayIterator($this->orders);
     }
 }

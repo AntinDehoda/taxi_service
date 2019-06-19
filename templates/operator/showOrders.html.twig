@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Orders{% endblock %}
+
+{% block body %}
+    <section class="drivers">
+        <h1>Orders</h1>
+        {% for order in orders %}
+            <p>
+                <span class="category-link">{{ order.id }} </span>
+            </p>
+        {% endfor %}
+    </section>
+{% endblock %}

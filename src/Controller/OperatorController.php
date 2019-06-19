@@ -11,6 +11,7 @@
 namespace App\Controller;
 
 use App\Form\OperatorLoginType;
+use App\Service\Order\OrderServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,10 +34,27 @@ class OperatorController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            return $this->render('operator/dashboard.html.twig');
         }
 
         return $this->render('operator/index.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/admin/orders", name="showOrders")
+     *
+     * @param OrderServiceInterface $orderService
+     *
+     * @return Response
+     */
+    public function showOrders(OrderServiceInterface $orderService): Response
+    {
+        $orders = $orderService->getAll();
+
+        return $this->render('operator/showOrders.html.twig', [
+            'orders' => $orders,
         ]);
     }
 }
