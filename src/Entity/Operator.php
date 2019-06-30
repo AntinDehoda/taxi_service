@@ -1,5 +1,13 @@
 <?php
 
+/*
+ *
+ * (c) Anton Dehoda <dehoda@ukr.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -26,6 +34,8 @@ class Operator implements UserInterface
      * @ORM\Column(type="json")
      */
     private $roles = [];
+
+    
 
     public function getId(): ?int
     {
@@ -63,7 +73,7 @@ class Operator implements UserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return \array_unique($roles);
     }
 
     public function setRoles(array $roles): self
@@ -96,5 +106,9 @@ class Operator implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function setPassword(string $encodePassword)
+    {
     }
 }

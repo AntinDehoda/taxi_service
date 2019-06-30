@@ -67,10 +67,11 @@
         }
     },
     "require-dev": {
-        "symfony/maker-bundle": "^1.11",
-        "symfony/var-dumper": "4.3.*",
+        "doctrine/doctrine-fixtures-bundle": "^3.2",
         "friendsofphp/php-cs-fixer": "^2.15",
-        "phpunit/phpunit": "^8.2"
-
+        "phpunit/phpunit": "^8.2",
+        "symfony/maker-bundle": "^1.11",
+        "symfony/profiler-pack": "^1.0",
+        "symfony/var-dumper": "4.3.*"
     }
 }

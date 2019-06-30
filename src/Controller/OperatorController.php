@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class OperatorController extends AbstractController
 {
     /**
-     * @Route("/admin/", name="login")
+     * @Route("/adm/")
      *
      * @param Request $request
      *
